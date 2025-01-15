@@ -43,11 +43,16 @@ public class MoveVertex : MonoBehaviour
 
             // Edit mesh 
 
+            // Takes the direction and the distance to give a point in world space that is then conveted to 
+            // object space of the gameObject. This can then all be scaled by the scale not changeing the pecived 
+            // largness from the view of fromPosition 
             vertices[i] = scale * rays[i].direction * vertexDistance[i] - gameObject.transform.position ;
 
-            Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red);
+            // Rays to the unmodivied objects vertecies 
+            Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red, 5.0f);
         }
 
+        // Update the object's vertices to the modified ones
         mesh.vertices = vertices;
     }
 
