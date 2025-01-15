@@ -15,13 +15,12 @@ public class MoveVertex : MonoBehaviour
 
     private void Update() 
     {
-        // Debug.Log(vertices.Length + " " + rays.Length + " " + vertexDistance.Length);
-        // if (callScript != wasCalled)
-        // {
-        //     MoveVerities(toGameObject);
-        //     wasCalled = callScript;
-        // }
-        MoveVerities(toGameObject);
+        if (callScript != wasCalled)
+        {
+            MoveVerities(toGameObject);
+            wasCalled = callScript;
+        }
+        //MoveVerities(toGameObject);
     }
     
     private void MoveVerities(GameObject gameObject)
@@ -44,7 +43,7 @@ public class MoveVertex : MonoBehaviour
 
             // Edit mesh 
 
-            vertices[i] = rays[i].direction * vertexDistance[i] - gameObject.transform.position ;
+            vertices[i] = scale * rays[i].direction * vertexDistance[i] - gameObject.transform.position ;
 
             Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red);
         }
