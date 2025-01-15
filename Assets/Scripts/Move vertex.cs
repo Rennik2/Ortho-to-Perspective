@@ -11,58 +11,46 @@ public class MoveVertex : MonoBehaviour
     [SerializeField] bool callScript;
 
     bool wasCalled;
-
-    private Mesh mesh;
-    private Vector3[] vertices;
-    private Ray[] rays;
-    private float[] vertexDistance;
-
-    private void Start() 
-    {
-        prepareMeshData();
-    }    
+   
 
     private void Update() 
     {
         // Debug.Log(vertices.Length + " " + rays.Length + " " + vertexDistance.Length);
         // if (callScript != wasCalled)
         // {
-        //     MoveVerities();
+        //     MoveVerities(toGameObject);
         //     wasCalled = callScript;
         // }
-        MoveVerities();
+        MoveVerities(toGameObject);
     }
     
-    private void MoveVerities()
+    private void MoveVerities(GameObject gameObject)
     {
-        Mesh mesh = toGameObject.GetComponent<MeshFilter>().mesh;
+        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        Ray[] rays = new Ray[vertices.Length];
+        float[] vertexDistance = new float[vertices.Length];
+
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
+            // Initialisation 
 
-            vertices[i] = rays[i].direction * vertexDistance[i] * scale;
+            // Ray from fromPosition to the vertex 
+            rays[i] = new Ray(fromPosition.position, (gameObject.transform.position + vertices[i]) - fromPosition.position);
+            // Distance from fromPosition to the vertex
+            vertexDistance[i] = Vector3.Distance(fromPosition.position, gameObject.transform.position + vertices[i]);
 
-            float distance = Vector3.Distance(fromPosition.position, toGameObject.transform.position + vertices[i]);
-            Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i] * distance, Color.red);
+
+            // Edit mesh 
+
+            vertices[i] = rays[i].direction * vertexDistance[i] - gameObject.transform.position ;
+
+            Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red);
         }
 
         mesh.vertices = vertices;
     }
 
-    private void prepareMeshData()
-    {
-        mesh = toGameObject.GetComponent<MeshFilter>().mesh;
 
-        vertices = mesh.vertices;
-
-        rays = new Ray[vertices.Length];
-        vertexDistance = new float[vertices.Length];
-
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, (toGameObject.transform.position + vertices[i]) - fromPosition.position);
-            // Distance from fromPosition to the vertex
-            vertexDistance[i] = Vector3.Distance(fromPosition.position, toGameObject.transform.position + vertices[i]);
-        }
-    }
 }
