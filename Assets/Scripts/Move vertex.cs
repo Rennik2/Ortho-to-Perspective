@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -7,18 +8,23 @@ public class MoveVertex : MonoBehaviour
 {
     [SerializeField] GameObject toGameObject;
     [SerializeField] Transform fromPosition; 
-    [SerializeField] float scale;
-    [SerializeField] bool callScript;
+    [SerializeField] float scale = 1;
+    [SerializeField] bool callScript = false;
+    [SerializeField] String fileName = "mesh";
 
     bool wasCalled;
    
+   private void Start() 
+   {
+    wasCalled = callScript;
+   }
 
     private void Update() 
     {
         if (callScript != wasCalled)
         {
             MoveVerities(toGameObject);
-            MeshToObj.ObjectToObj(toGameObject);
+            MeshToObj.ObjectToObj(toGameObject, $"C:\\Users\\happy\\Downloads\\{fileName}.obj");
             wasCalled = callScript;
         }
         //MoveVerities(toGameObject);
@@ -34,7 +40,7 @@ public class MoveVertex : MonoBehaviour
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
-            // Initialisation 
+            // Initialization 
 
             // Ray from fromPosition to the vertex 
             rays[i] = new Ray(fromPosition.position, (gameObject.transform.position + vertices[i]) - fromPosition.position);
@@ -44,18 +50,23 @@ public class MoveVertex : MonoBehaviour
 
             // Edit mesh 
 
-            // Takes the direction and the distance to give a point in world space that is then conveted to 
-            // object space of the gameObject. This can then all be scaled by the scale not changeing the pecived 
-            // largness from the view of fromPosition 
-            vertices[i] = scale * rays[i].direction * vertexDistance[i] - gameObject.transform.position ;
+            // Takes the direction and the distance to give a point in world space that is then converted to 
+            // object space of the gameObject. This can then all be scaled by the scale not changing the perceived 
+            // largeness from the view of fromPosition 
+            vertices[i] = rays[i].direction * vertexDistance[i] * scale - gameObject.transform.position;
 
-            // Rays to the unmodivied objects vertecies 
+            // Rays to the unmodified objects vertices 
             Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red, 5.0f);
         }
 
         // Update the object's vertices to the modified ones
         mesh.vertices = vertices;
     }
+
+    // private void cameraRays()
+    // {
+    //     Plane plane = new Plane(fromPosition.position, );
+    // }
 
 
 }

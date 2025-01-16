@@ -10,7 +10,7 @@ public static class MeshToObj
     {
         if (gameObject == null || gameObject.GetComponent<MeshFilter>() == null || gameObject.GetComponent<MeshFilter>().mesh == null)
         {
-            Debug.LogError("Gameobject is null or doesn't have MeshFilter componet or doesn't have a mesh");
+            Debug.LogError("GameObject is null or doesn't have MeshFilter component or doesn't have a mesh");
             return; 
         }
 
@@ -21,11 +21,12 @@ public static class MeshToObj
         {
             // Write object name
             writer.WriteLine($"o " + gameObject.name);
+            Vector3 worldPos = gameObject.transform.position;
 
             // Write vertices 
             foreach (Vector3 vert in mesh.vertices)
             {
-                writer.WriteLine($"v {vert.x} {vert.y} {vert.z}");
+                writer.WriteLine($"v {vert.x + worldPos.x} {vert.y + worldPos.y} {vert.z + worldPos.z}");
             }
             // Write normals 
             foreach (Vector3 vertNormal in mesh.normals)
