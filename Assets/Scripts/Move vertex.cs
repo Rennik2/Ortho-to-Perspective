@@ -18,6 +18,7 @@ public class MoveVertex : MonoBehaviour
         if (callScript != wasCalled)
         {
             MoveVerities(toGameObject);
+            MeshToObj.ObjectToObj(toGameObject);
             wasCalled = callScript;
         }
         //MoveVerities(toGameObject);
