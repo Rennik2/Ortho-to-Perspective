@@ -16,7 +16,7 @@ public class MoveVertex : MonoBehaviour
    
    private void Start() 
    {
-    wasCalled = callScript;
+        wasCalled = callScript;
    }
 
     private void Update() 
