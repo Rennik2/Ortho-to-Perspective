@@ -10,7 +10,7 @@ using UnityEngine.Experimental.Rendering;
 
 public class MoveVertex : MonoBehaviour
 {
-    [SerializeField] GameObject toGameObject;
+    [SerializeField] GameObject[] toGameObjects;
     [SerializeField] Transform fromPosition; 
     [SerializeField] float scale = 1;
     [SerializeField] bool callScript = false;
@@ -31,7 +31,10 @@ public class MoveVertex : MonoBehaviour
             // ScaleFromView(toGameObject);
             // MeshToObj.ObjectToObj(toGameObject, $"C:\\Users\\happy\\Downloads\\{fileName}.obj");
 
-            MeshFromPerspectiveToOrtho(toGameObject);
+            foreach (GameObject gameObject in toGameObjects)
+            {
+                MeshFromPerspectiveToOrtho(gameObject);
+            }
 
             wasCalled = callScript;
         }
