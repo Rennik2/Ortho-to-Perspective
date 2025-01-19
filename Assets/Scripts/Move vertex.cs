@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.UIElements.Experimental;
 
 public class MoveVertex : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class MoveVertex : MonoBehaviour
 
             wasCalled = callScript;
         }
-
+        
     }
     
     private void ScaleFromView(GameObject gameObject)
@@ -76,23 +77,26 @@ public class MoveVertex : MonoBehaviour
 
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
     {
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-        Vector3[] vertices = mesh.vertices;
-
-        Ray[] rays = new Ray[vertices.Length];
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
 
+        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+
+        Vector3[] vertices = mesh.vertices;
+        Ray[] rays = new Ray[vertices.Length];
         Vector3[] throughViewPoints = new Vector3[vertices.Length];
-        float[] vertDistance= new float[vertices.Length];
+        float[] vertDistance = new float[vertices.Length];
 
         Ray[] perspectiveRays = new Ray[vertices.Length];
+        
 
         for (int i = 0; i < vertices.Length; i++)
         {
             // Initialization 
-            rays[i] = new Ray(vertices[i] + gameObject.transform.position, - fromPosition.forward);
+            Vector3 worldSpaceVert = vertices[i] + gameObject.transform.position;
+            rays[i] = new Ray(worldSpaceVert, - fromPosition.forward);
 
             Vector3 planeIntersectionPoint = RayPlaneIntersectionPoint(rays[i], cameraPlane);
+            rays[i] = new Ray(planeIntersectionPoint, - rays[i].direction);
 
             vertDistance[i] = Vector3.Distance(planeIntersectionPoint, vertices[i] + gameObject.transform.position);
             throughViewPoints[i] = rays[i].GetPoint(throughPlaneDistance);
@@ -103,17 +107,18 @@ public class MoveVertex : MonoBehaviour
             //vertices[i] = perspectiveRays[i].GetPoint(vertDistance[i]) + fromPosition.position;
             vertices[i] =  perspectiveRays[i].direction * vertDistance[i] - gameObject.transform.position;
 
-            // Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertDistance[i], Color.blue, 10f);
+            Debug.DrawRay(fromPosition.position, throughViewPoints[i], Color.blue, 10f);
         }
 
         mesh.vertices = vertices;
 
 
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertDistance[i], Color.blue, 10f);
+        // for (int i = 0; i < vertices.Length; i++)
+        // {
+        //     //Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertDistance[i], Color.blue, 10f);
+        //     Debug.DrawRay(rays[i].origin, rays[i].direction * vertDistance[i], Color.blue, 10f);
 
-        }
+        // }
     }
 
     // Return world space point where they intersect 

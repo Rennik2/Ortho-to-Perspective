@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 201794645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 1, z: 5}
+  m_LocalPosition: {x: -2, y: -2.05, z: 7.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -489,10 +489,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 408a271f5b2b5c745b68524d6c7512e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toGameObject: {fileID: 201794645}
+  toGameObjects:
+  - {fileID: 201794645}
   fromPosition: {fileID: 330585546}
   scale: 1
-  callScript: 1
+  callScript: 0
+  throughPlaneDistance: 1
   fileName: mesh
 --- !u!4 &461162896
 Transform:
@@ -635,7 +637,7 @@ Transform:
   m_GameObject: {fileID: 1146322467}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 1, z: 5}
+  m_LocalPosition: {x: 2, y: 1, z: 7.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
