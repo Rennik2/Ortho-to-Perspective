@@ -1,13 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
-using UnityEngine.UIElements.Experimental;
 
 public class MoveVertex : MonoBehaviour
 {
@@ -18,27 +10,37 @@ public class MoveVertex : MonoBehaviour
     [SerializeField] float throughPlaneDistance = 1;
     [SerializeField] String fileName = "mesh";
 
-    bool wasCalled;
+    private Mesh[] unmodifiedMeshes;
+
    
    private void Start() 
    {
-        wasCalled = callScript;
+        unmodifiedMeshes = new Mesh[toGameObjects.Length];
+
+        for (int i = 0; i < toGameObjects.Length; i++)
+        {
+            if (toGameObjects[i].GetComponent<MeshFilter>()== null)
+                Debug.LogError($"no mesh filter at {i}");
+
+            unmodifiedMeshes[i] = Instantiate(toGameObjects[i].GetComponent<MeshFilter>().mesh);
+        }
    }
 
     private void Update() 
     {
-        if (callScript != wasCalled)
+        // Reset all meshes to unmodified state os updates can be in real time and things don't go flying off into the distance
+        for (int i = 0; i < toGameObjects.Length; i++)
         {
-            // ScaleFromView(toGameObject);
-            // MeshToObj.ObjectToObj(toGameObject, $"C:\\Users\\happy\\Downloads\\{fileName}.obj");
-
-            foreach (GameObject gameObject in toGameObjects)
-            {
-                MeshFromPerspectiveToOrtho(gameObject);
-            }
-
-            wasCalled = callScript;
+            toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);
         }
+
+        foreach (GameObject gameObject in toGameObjects)
+        {
+            ScaleFromView(gameObject);
+
+            //MeshFromPerspectiveToOrtho(gameObject);
+        }
+
         
     }
     
@@ -68,7 +70,7 @@ public class MoveVertex : MonoBehaviour
             vertices[i] = rays[i].direction * vertexDistance[i] * scale - gameObject.transform.position;
 
             // Rays to the unmodified objects vertices 
-            Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red, 5.0f);
+            Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red);
         }
 
         // Update the object's vertices to the modified ones
@@ -83,9 +85,10 @@ public class MoveVertex : MonoBehaviour
 
         Vector3[] vertices = mesh.vertices;
         Ray[] rays = new Ray[vertices.Length];
+
         Vector3[] throughViewPoints = new Vector3[vertices.Length];
         float[] vertDistance = new float[vertices.Length];
-
+        Vector3[] planeIntersectionPoint = new Vector3[vertices.Length];
         Ray[] perspectiveRays = new Ray[vertices.Length];
         
 
@@ -95,30 +98,21 @@ public class MoveVertex : MonoBehaviour
             Vector3 worldSpaceVert = vertices[i] + gameObject.transform.position;
             rays[i] = new Ray(worldSpaceVert, - fromPosition.forward);
 
-            Vector3 planeIntersectionPoint = RayPlaneIntersectionPoint(rays[i], cameraPlane);
-            rays[i] = new Ray(planeIntersectionPoint, - rays[i].direction);
+            planeIntersectionPoint[i] = RayPlaneIntersectionPoint(rays[i], cameraPlane);
+            rays[i] = new Ray(planeIntersectionPoint[i], - rays[i].direction);
 
-            vertDistance[i] = Vector3.Distance(planeIntersectionPoint, vertices[i] + gameObject.transform.position);
+            vertDistance[i] = Vector3.Distance(planeIntersectionPoint[i], vertices[i] + gameObject.transform.position);
             throughViewPoints[i] = rays[i].GetPoint(throughPlaneDistance);
 
             // Editing
             perspectiveRays[i] = new Ray(fromPosition.position, throughViewPoints[i]);
-
-            //vertices[i] = perspectiveRays[i].GetPoint(vertDistance[i]) + fromPosition.position;
             vertices[i] =  perspectiveRays[i].direction * vertDistance[i] - gameObject.transform.position;
 
-            Debug.DrawRay(fromPosition.position, throughViewPoints[i], Color.blue, 10f);
+            // Debugging
+            Debug.DrawRay(fromPosition.position, throughViewPoints[i], Color.blue);
         }
 
         mesh.vertices = vertices;
-
-
-        // for (int i = 0; i < vertices.Length; i++)
-        // {
-        //     //Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertDistance[i], Color.blue, 10f);
-        //     Debug.DrawRay(rays[i].origin, rays[i].direction * vertDistance[i], Color.blue, 10f);
-
-        // }
     }
 
     // Return world space point where they intersect 
@@ -133,5 +127,4 @@ public class MoveVertex : MonoBehaviour
 
         return intersectionPoint;
     }
-
 }
