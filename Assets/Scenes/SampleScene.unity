@@ -292,7 +292,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.22, z: -1.79}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -601,7 +601,7 @@ MonoBehaviour:
   - {fileID: 406068866}
   fromPosition: {fileID: 330585546}
   scale: 1
-  callScript: 1
+  orthographic: 1
   throughPlaneDistance: 10
   fileName: newMesh
 --- !u!4 &461162896

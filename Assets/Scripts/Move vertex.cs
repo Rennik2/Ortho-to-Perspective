@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+using static MeshToObj;
+
 public class MoveVertex : MonoBehaviour
 {
     [SerializeField] GameObject[] toGameObjects;
@@ -8,13 +10,16 @@ public class MoveVertex : MonoBehaviour
     [SerializeField] float scale = 1;
     [SerializeField] bool orthographic = false;
     [SerializeField] float throughPlaneDistance = 1;
+    [SerializeField] bool saveMesh = false;
     [SerializeField] String fileName = "mesh";
 
-
     private Mesh[] unmodifiedMeshes;
+    private bool wasSaved;
 
     private void Start() 
    {
+        wasSaved = saveMesh;
+
         unmodifiedMeshes = new Mesh[toGameObjects.Length];
 
         for (int i = 0; i < toGameObjects.Length; i++)
@@ -41,6 +46,11 @@ public class MoveVertex : MonoBehaviour
                 MeshFromPerspectiveToOrtho1(gameObject);
             }
             ScaleFromView(gameObject);
+        }
+
+        if (saveMesh != wasSaved)
+        {
+            ObjectsToObj(toGameObjects);
         }
     }
     
@@ -111,7 +121,7 @@ public class MoveVertex : MonoBehaviour
         mesh.vertices = vertices;
     }
 
-private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
+    private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
 
@@ -150,7 +160,7 @@ private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
     }
 
     // Return world space point where they intersect 
-    private Vector3 RayPlaneIntersectionPoint(Ray line, Plane plane)
+    public static Vector3 RayPlaneIntersectionPoint(Ray line, Plane plane)
     {
         float distance = 0;
 
@@ -162,14 +172,14 @@ private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
         return intersectionPoint;
     }
     
-    private Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
+    public static Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
     {
         Matrix4x4 transformationMatrix = gameObject.transform.localToWorldMatrix;
         // Might want to see if MultiplyPoint3x4 works (it would be faster)
         Vector3 vert_WS = transformationMatrix.MultiplyPoint(vert);
         return vert_WS;
     }
-    private Vector3[] VerticesFromLocalToWorldSpace(GameObject gameObject, Vector3[] vertices)
+    public static Vector3[] VerticesFromLocalToWorldSpace(GameObject gameObject, Vector3[] vertices)
     {
         Vector3[] vertices_WS = new Vector3[vertices.Length];
         for (int i = 0; i < vertices.Length; i++)
@@ -178,13 +188,13 @@ private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
         }
         return vertices_WS;
     }
-    private Vector3 VertFromWorldToLocalSpace(GameObject gameObject, Vector3 vert)
+    public static Vector3 VertFromWorldToLocalSpace(GameObject gameObject, Vector3 vert)
     {
         Matrix4x4 transformationMatrix = gameObject.transform.worldToLocalMatrix;
         Vector3 vert_LS = transformationMatrix.MultiplyPoint(vert);
         return vert_LS;
     }
-    private Vector3[] VerticesFromWorldToLocalSpace(GameObject gameObject, Vector3[] vertices)
+    public static Vector3[] VerticesFromWorldToLocalSpace(GameObject gameObject, Vector3[] vertices)
     {
         Vector3[] vertices_LS = new Vector3[vertices.Length];
         for (int i = 0; i < vertices.Length; i++)
