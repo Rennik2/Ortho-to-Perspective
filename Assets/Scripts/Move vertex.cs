@@ -40,8 +40,6 @@ public class MoveVertex : MonoBehaviour
 
             //MeshFromPerspectiveToOrtho(gameObject);
         }
-
-        
     }
     
     private void ScaleFromView(GameObject gameObject)
@@ -57,22 +55,23 @@ public class MoveVertex : MonoBehaviour
             // Initialization 
 
             // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, (gameObject.transform.position + vertices[i]) - fromPosition.position);
+            rays[i] = new Ray(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
             // Distance from fromPosition to the vertex
-            vertexDistance[i] = Vector3.Distance(fromPosition.position, gameObject.transform.position + vertices[i]);
+            vertexDistance[i] = Vector3.Distance(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]));
 
 
             // Edit mesh 
 
+            Matrix4x4 transformationMatrix = gameObject.transform.localToWorldMatrix;
+
             // Takes the direction and the distance to give a point in world space that is then converted to 
             // object space of the gameObject. This can then all be scaled by the scale not changing the perceived 
             // largeness from the view of fromPosition 
-            vertices[i] = rays[i].direction * vertexDistance[i] * scale - gameObject.transform.position;
+            vertices[i] = transformationMatrix.MultiplyPoint(rays[i].direction * vertexDistance[i] * scale - gameObject.transform.position);
 
             // Rays to the unmodified objects vertices 
             Debug.DrawRay(fromPosition.position, rays[i].direction * vertexDistance[i] , Color.red);
         }
-
         // Update the object's vertices to the modified ones
         mesh.vertices = vertices;
     }
@@ -126,5 +125,46 @@ public class MoveVertex : MonoBehaviour
         Vector3 intersectionPoint = line.GetPoint(distance);
 
         return intersectionPoint;
+    }
+
+    private Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
+    {
+        Matrix4x4 transformationMatrix = gameObject.transform.localToWorldMatrix;
+        // Might want to see if MultiplyPoint3x4 works (it would be faster)
+        Vector3 vert_WS = transformationMatrix.MultiplyPoint(vert);
+
+        return vert_WS;
+    }
+
+    private Vector3[] VerticesFromLocalToWorldSpace(GameObject gameObject, Vector3[] vertices)
+    {
+        Vector3[] vertices_WS = new Vector3[vertices.Length];
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices_WS[i] = VertFromLocalToWorldSpace(gameObject, vertices[i]);
+        }
+
+        return vertices_WS;
+    }
+
+    private Vector3 VertFromWorldToLocalSpace(GameObject gameObject, Vector3 vert)
+    {
+        Matrix4x4 transformationMatrix = gameObject.transform.worldToLocalMatrix;
+        Vector3 vert_LS = transformationMatrix.MultiplyPoint(vert);
+
+        return vert_LS;
+    }
+
+    private Vector3[] VerticesFromWorldToLocalSpace(GameObject gameObject, Vector3[] vertices)
+    {
+        Vector3[] vertices_LS = new Vector3[vertices.Length];
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices_LS[i] = VertFromWorldToLocalSpace(gameObject, vertices[i]);
+        }
+
+        return vertices_LS;
     }
 }
