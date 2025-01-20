@@ -36,7 +36,7 @@ public class MoveVertex : MonoBehaviour
 
         foreach (GameObject gameObject in toGameObjects)
         {
-            ScaleFromView(gameObject);
+            ScaleFromView1(gameObject);
 
             //MeshFromPerspectiveToOrtho(gameObject);
         }
@@ -57,7 +57,7 @@ public class MoveVertex : MonoBehaviour
             // Initialization 
 
             // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, (gameObject.transform.position + vertices[i]) - fromPosition.position);
+            rays[i] = new Ray(fromPosition.position, gameObject.transform.position + vertices[i] - fromPosition.position);
             // Distance from fromPosition to the vertex
             vertexDistance[i] = Vector3.Distance(fromPosition.position, gameObject.transform.position + vertices[i]);
 
@@ -76,7 +76,35 @@ public class MoveVertex : MonoBehaviour
         // Update the object's vertices to the modified ones
         mesh.vertices = vertices;
     }
+    
+    private void ScaleFromView1(GameObject gameObject)
+    {
+        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
 
+        Ray[] rays = new Ray[vertices.Length];
+        float[] vertexDistance = new float[vertices.Length];
+
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            // Initialization 
+
+            // Ray from fromPosition to the vertex 
+            rays[i] = new Ray(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
+            // Distance from fromPosition to the vertex
+            vertexDistance[i] = Vector3.Distance(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]));
+
+            // Edit
+            vertices[i] = VertFromWorldToLocalSpace(gameObject, rays[i].direction * vertexDistance[i] * scale + fromPosition.position);
+
+            // Rays to the unmodified objects vertices 
+            Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
+        }
+
+        // Update the object's vertices to the modified ones
+        mesh.vertices = vertices;
+    }
+    
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
