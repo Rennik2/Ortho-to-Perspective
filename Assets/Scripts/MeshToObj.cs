@@ -6,7 +6,7 @@ using static MoveVertex;
 public static class MeshToObj 
 {
 
-    public static void ObjectToObj(GameObject gameObject, string pathAndName)
+    public static void ObjectToObj(GameObject gameObject, string path, string name)
     {
         if (gameObject == null || gameObject.GetComponent<MeshFilter>() == null || gameObject.GetComponent<MeshFilter>().mesh == null)
         {
@@ -17,16 +17,16 @@ public static class MeshToObj
 
         Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
 
-        using (StreamWriter writer = new StreamWriter(pathAndName))
+        using (StreamWriter writer = new StreamWriter($"{path}\\{name}.obj"))
         {
             // Write object name
             writer.WriteLine($"o " + gameObject.name);
-            Vector3 worldPos = gameObject.transform.position;
 
             // Write vertices 
             foreach (Vector3 vert in mesh.vertices)
             {
-                writer.WriteLine($"v {vert.x + worldPos.x} {vert.y + worldPos.y} {vert.z + worldPos.z}");
+                Vector3 vertWorldPos = VertFromLocalToWorldSpace(gameObject, vert);
+                writer.WriteLine($"v {vertWorldPos.x} {vertWorldPos.y} {vertWorldPos.z}");
             }
             // Write normals 
             foreach (Vector3 vertNormal in mesh.normals)
@@ -50,48 +50,20 @@ public static class MeshToObj
     public static void ObjectToObj(GameObject gameObject)
     {
         string path = "C:\\Users\\happy\\Downloads";
-        ObjectToObj(gameObject, path + "\\mesh.obj");
+        ObjectToObj(gameObject, path, "mesh");
     }
 
 
-    public static void ObjectsToObj(GameObject[] gameObjects, String filePath)
+    public static void ObjectsToObj(GameObject[] gameObjects, String path, String name)
     {
-        using (StreamWriter writer = new StreamWriter(filePath))
+        for (int i = 0; i < gameObjects.Length; i++)
         {
-            foreach (GameObject gameObject in gameObjects)
-            {
-                Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-                Vector3[] vertices = VerticesFromLocalToWorldSpace(gameObject, mesh.vertices);
-                // Write object name
-                writer.WriteLine($"o " + gameObject.name);
-                Vector3 worldPos = gameObject.transform.position;
-
-                // Write vertices 
-                foreach (Vector3 vert in vertices)
-                {
-                    writer.WriteLine($"v {vert.x} {vert.y} {vert.z}");
-                }
-                // Write normals 
-                foreach (Vector3 vertNormal in mesh.normals)
-                {
-                    writer.WriteLine($"vn {vertNormal.x} {vertNormal.y} {vertNormal.z}");
-                }
-                // Write uvs
-                foreach (Vector2 uv in mesh.uv)
-                {
-                    writer.WriteLine($"vt {uv.x} {uv.y}");
-                }
-                // Write
-                for (int i = 0; i < mesh.triangles.Length; i += 3)
-                {
-                    writer.WriteLine($"f {mesh.triangles[i] + 1} {mesh.triangles[i + 1] + 1} {mesh.triangles[i + 2] + 1}");
-                }
-            }
+            ObjectToObj(gameObjects[i], path, $"{name}{i}");
         }
     }
     public static void ObjectsToObj(GameObject[] gameObject)
     {
         string path = "C:\\Users\\happy\\Downloads";
-        ObjectsToObj(gameObject, path + "\\mesh.obj");
+        ObjectsToObj(gameObject, path, "mesh");
     }
 }
