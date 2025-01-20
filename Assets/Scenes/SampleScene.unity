@@ -599,7 +599,7 @@ MonoBehaviour:
   - {fileID: 1146322467}
   - {fileID: 406068866}
   fromPosition: {fileID: 330585546}
-  scale: 0
+  scale: 1
   callScript: 1
   throughPlaneDistance: 10
   fileName: newMesh
