@@ -26,7 +26,7 @@ public static class MeshToObj
             foreach (Vector3 vert in mesh.vertices)
             {
                 Vector3 vertWorldPos = VertFromLocalToWorldSpace(gameObject, vert);
-                writer.WriteLine($"v {vertWorldPos.x} {vertWorldPos.y} {vertWorldPos.z}");
+                writer.WriteLine($"v { - vertWorldPos.x} {vertWorldPos.y} {vertWorldPos.z}");
             }
             // Write normals 
             foreach (Vector3 vertNormal in mesh.normals)
