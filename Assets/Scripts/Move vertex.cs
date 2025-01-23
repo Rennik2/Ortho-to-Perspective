@@ -76,7 +76,7 @@ public class MoveVertex : MonoBehaviour
             vertices[i] = VertFromWorldToLocalSpace(gameObject, rays[i].direction * vertexDistance[i] * scale + fromPosition.position);
 
             // Rays to the unmodified objects vertices 
-            Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
+            //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
         }
 
         // Update the object's vertices to the modified ones
@@ -115,7 +115,7 @@ public class MoveVertex : MonoBehaviour
             vertices[i] =  VertFromWorldToLocalSpace(gameObject, perspectiveRays[i].direction * vertexDistances[i]);
 
             // Debugging
-            Debug.DrawRay(planeIntersectionPoint[i], throughViewPoints[i] * vertexDistances[i], Color.blue);
+            //Debug.DrawRay(planeIntersectionPoint[i], throughViewPoints[i] * vertexDistances[i], Color.blue);
         }
 
         mesh.vertices = vertices;
@@ -153,7 +153,7 @@ public class MoveVertex : MonoBehaviour
             vertices[i] = VertFromWorldToLocalSpace(gameObject, perspectiveRays[i].GetPoint(vertexDistances[i]));
 
             // Debugging
-            Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertexDistances[i], Color.blue);
+            //Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertexDistances[i], Color.blue);
         }
 
         mesh.vertices = vertices;
@@ -165,7 +165,7 @@ public class MoveVertex : MonoBehaviour
         float distance = 0;
 
         if (!plane.Raycast(line, out distance))
-            Debug.LogError("A ray that was supposed to be hitting the camera plane did not some how. You should multiply by -1 some where");
+            Debug.LogError("A ray that was supposed to be hitting the camera plane did not some how. There are things behind the camera or you should multiply by -1 some where");
         
         Vector3 intersectionPoint = line.GetPoint(distance);
 

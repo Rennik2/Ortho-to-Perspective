@@ -17,6 +17,8 @@ public static class MeshToObj
 
         Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
 
+        mesh.Optimize();
+
         using (StreamWriter writer = new StreamWriter($"{path}\\{name}.obj"))
         {
             // Write object name
