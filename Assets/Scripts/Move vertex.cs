@@ -165,7 +165,7 @@ public class MoveVertex : MonoBehaviour
         float distance = 0;
 
         if (!plane.Raycast(line, out distance))
-            Debug.LogError("A ray that was supposed to be hitting the camera plane did not some how. There are things behind the camera or you should multiply by -1 some where");
+            Debug.LogError("A ray that was supposed to be hit the camera plane but didn't some how. There are things behind the camera or you should multiply by -1 some where");
         
         Vector3 intersectionPoint = line.GetPoint(distance);
 
