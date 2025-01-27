@@ -43,7 +43,7 @@ public class MoveVertex : MonoBehaviour
         {
             if (orthographic)
             {
-                MeshFromPerspectiveToOrtho1(gameObject);
+                MeshFromPerspectiveToOrtho(gameObject);
             }
             ScaleFromView(gameObject);
         }
@@ -76,52 +76,15 @@ public class MoveVertex : MonoBehaviour
             vertices[i] = VertFromWorldToLocalSpace(gameObject, rays[i].direction * vertexDistance[i] * scale + fromPosition.position);
 
             // Rays to the unmodified objects vertices 
-            Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
+            //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
         }
 
         // Update the object's vertices to the modified ones
         mesh.vertices = vertices;
     }
     
+
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
-    {
-        Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
-
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-
-        Vector3[] vertices = mesh.vertices;
-        Ray[] rays = new Ray[vertices.Length];
-
-        Vector3[] throughViewPoints = new Vector3[vertices.Length];
-        float[] vertexDistances = new float[vertices.Length];
-        Vector3[] planeIntersectionPoint = new Vector3[vertices.Length];
-        Ray[] perspectiveRays = new Ray[vertices.Length];
-        
-
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            // Initialization 
-            Vector3 worldSpaceVert = VertFromLocalToWorldSpace(gameObject, vertices[i]);
-            rays[i] = new Ray(worldSpaceVert, - fromPosition.forward);
-
-            planeIntersectionPoint[i] = RayPlaneIntersectionPoint(rays[i], cameraPlane);
-            rays[i] = new Ray(planeIntersectionPoint[i], - rays[i].direction);
-
-            vertexDistances[i] = Vector3.Distance(planeIntersectionPoint[i], worldSpaceVert);
-            throughViewPoints[i] = rays[i].GetPoint(throughPlaneDistance);
-
-            // Editing
-            perspectiveRays[i] = new Ray(fromPosition.position, throughViewPoints[i]);
-            vertices[i] =  VertFromWorldToLocalSpace(gameObject, perspectiveRays[i].direction * vertexDistances[i]);
-
-            // Debugging
-            Debug.DrawRay(planeIntersectionPoint[i], throughViewPoints[i] * vertexDistances[i], Color.blue);
-        }
-
-        mesh.vertices = vertices;
-    }
-
-    private void MeshFromPerspectiveToOrtho1(GameObject gameObject)
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
 
@@ -153,7 +116,7 @@ public class MoveVertex : MonoBehaviour
             vertices[i] = VertFromWorldToLocalSpace(gameObject, perspectiveRays[i].GetPoint(vertexDistances[i]));
 
             // Debugging
-            Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertexDistances[i], Color.blue);
+            //Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertexDistances[i], Color.blue);
         }
 
         mesh.vertices = vertices;
