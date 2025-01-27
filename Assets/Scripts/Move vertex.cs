@@ -1,6 +1,10 @@
 using System;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using static MeshToObj;
 
 public class MoveVertex : MonoBehaviour
@@ -8,18 +12,14 @@ public class MoveVertex : MonoBehaviour
     [SerializeField] GameObject[] toGameObjects;
     [SerializeField] Transform fromPosition; 
     [SerializeField] float scale = 1;
-    [SerializeField] bool orthographic = false;
+    [SerializeField] bool isOrthographic = false;
     [SerializeField] float throughPlaneDistance = 1;
-    [SerializeField] bool saveMesh = false;
     [SerializeField] String fileName = "mesh";
 
     private Mesh[] unmodifiedMeshes;
-    private bool wasSaved;
 
     private void Start() 
    {
-        wasSaved = saveMesh;
-
         unmodifiedMeshes = new Mesh[toGameObjects.Length];
 
         for (int i = 0; i < toGameObjects.Length; i++)
@@ -34,6 +34,11 @@ public class MoveVertex : MonoBehaviour
     private void Update() 
     {
         // Reset all meshes to unmodified state os updates can be in real time and things don't go flying off into the distance
+        //UpdateOrthographic();
+    }
+
+    public void UpdateOrthographic()
+    {
         for (int i = 0; i < toGameObjects.Length; i++)
         {
             toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);
@@ -41,14 +46,17 @@ public class MoveVertex : MonoBehaviour
 
         foreach (GameObject gameObject in toGameObjects)
         {
-            if (orthographic)
+            if (isOrthographic)
             {
                 MeshFromPerspectiveToOrtho(gameObject);
             }
             ScaleFromView(gameObject);
         }
+    }
 
-        if (saveMesh != wasSaved)
+    public void SaveMesh()
+    {
+        foreach (GameObject gameObject in toGameObjects)
         {
             ObjectsToObj(toGameObjects, "C:\\Users\\happy\\Downloads", fileName);
         }
@@ -167,3 +175,27 @@ public class MoveVertex : MonoBehaviour
         return vertices_LS;
     }
 }
+
+
+
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(MoveVertex))]
+class EditorMoveVertex : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        MoveVertex mv = target as MoveVertex;
+
+        if (GUILayout.Button("Update Mesh"))
+        {
+            mv.UpdateOrthographic();
+        }
+        if (GUILayout.Button("Save Mesh"))
+        {
+            mv.SaveMesh();
+        }
+    }
+}
+#endif
