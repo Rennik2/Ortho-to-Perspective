@@ -56,10 +56,7 @@ public class MoveVertex : MonoBehaviour
 
     public void SaveMesh()
     {
-        foreach (GameObject gameObject in toGameObjects)
-        {
-            ObjectsToObj(toGameObjects, "C:\\Users\\happy\\Downloads", fileName);
-        }
+        ObjectsToObj(toGameObjects, "C:\\Users\\happy\\Downloads", fileName);
     }
     
     
@@ -192,6 +189,7 @@ class EditorMoveVertex : Editor
         {
             mv.UpdateOrthographic();
         }
+
         if (GUILayout.Button("Save Mesh"))
         {
             mv.SaveMesh();
