@@ -275,9 +275,8 @@ MonoBehaviour:
   - {fileID: 339239531}
   fromPosition: {fileID: 1914206134}
   scale: 0.7
-  orthographic: 1
+  isOrthographic: 1
   throughPlaneDistance: 7
-  saveMesh: 0
   fileName: mesh2
 --- !u!23 &339239533
 MeshRenderer:
@@ -379,9 +378,8 @@ MonoBehaviour:
   - {fileID: 677525618}
   fromPosition: {fileID: 1914206134}
   scale: 2.3
-  orthographic: 1
+  isOrthographic: 1
   throughPlaneDistance: 7
-  saveMesh: 0
   fileName: mesh3
 --- !u!23 &677525620
 MeshRenderer:
@@ -483,9 +481,8 @@ MonoBehaviour:
   - {fileID: 1664427860}
   fromPosition: {fileID: 1914206134}
   scale: 0.6
-  orthographic: 1
+  isOrthographic: 1
   throughPlaneDistance: 7
-  saveMesh: 0
   fileName: mesh1
 --- !u!23 &1664427862
 MeshRenderer:
@@ -724,9 +721,8 @@ MonoBehaviour:
   - {fileID: 2074082019}
   fromPosition: {fileID: 1914206134}
   scale: 1
-  orthographic: 1
+  isOrthographic: 1
   throughPlaneDistance: 7
-  saveMesh: 0
   fileName: mesh0
 --- !u!23 &2074082021
 MeshRenderer:
