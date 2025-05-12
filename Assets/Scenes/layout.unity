@@ -277,7 +277,7 @@ MonoBehaviour:
   scale: 0.7
   isOrthographic: 1
   throughPlaneDistance: 7
-  fileName: mesh2
+  updateContinuously: 1
 --- !u!23 &339239533
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -380,7 +380,7 @@ MonoBehaviour:
   scale: 2.3
   isOrthographic: 1
   throughPlaneDistance: 7
-  fileName: mesh3
+  updateContinuously: 1
 --- !u!23 &677525620
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   scale: 0.6
   isOrthographic: 1
   throughPlaneDistance: 7
-  fileName: mesh1
+  updateContinuously: 1
 --- !u!23 &1664427862
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -698,6 +698,7 @@ GameObject:
   - component: {fileID: 2074082022}
   - component: {fileID: 2074082021}
   - component: {fileID: 2074082020}
+  - component: {fileID: 2074082024}
   m_Layer: 0
   m_Name: cup
   m_TagString: Untagged
@@ -723,7 +724,7 @@ MonoBehaviour:
   scale: 1
   isOrthographic: 1
   throughPlaneDistance: 7
-  fileName: mesh0
+  updateContinuously: 1
 --- !u!23 &2074082021
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -789,6 +790,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -100, y: 0, z: -23.979004}
+--- !u!114 &2074082024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074082019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac9d6beeff7d60448b6b336bd65f0f9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fromPosition: {fileID: 0}
+  fullObjectScale: 1
+  uniqueVertMultiplier: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System;
-using static MoveVertex;
+using static ToOrtho;
 
 public static class MeshToObj 
 {

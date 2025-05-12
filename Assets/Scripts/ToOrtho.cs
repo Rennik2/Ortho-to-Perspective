@@ -7,15 +7,14 @@ using UnityEditor;
 
 using static MeshToObj;
 
-public class MoveVertex : MonoBehaviour
+public class ToOrtho : MonoBehaviour
 {
     [SerializeField] GameObject[] toGameObjects;
     [SerializeField] Transform fromPosition; 
     [SerializeField] float scale = 1;
-    [SerializeField] bool isOrthographic = false;
+    [SerializeField] bool isOrthographic = true;
     [SerializeField] float throughPlaneDistance = 1;
-    [SerializeField] String fileName = "mesh";
-
+    [SerializeField] bool updateContinuously = false; 
     private Mesh[] unmodifiedMeshes;
 
     private void Start() 
@@ -29,12 +28,19 @@ public class MoveVertex : MonoBehaviour
 
             unmodifiedMeshes[i] = Instantiate(toGameObjects[i].GetComponent<MeshFilter>().mesh);
         }
+
+        if (fromPosition == null)
+        {
+            fromPosition = Camera.main.transform;
+        }
    }
 
     private void Update() 
     {
-        // Reset all meshes to unmodified state os updates can be in real time and things don't go flying off into the distance
-        //UpdateOrthographic();
+        if (updateContinuously)
+        {
+            UpdateOrthographic();
+        }
     }
 
     public void UpdateOrthographic()
@@ -50,43 +56,10 @@ public class MoveVertex : MonoBehaviour
             {
                 MeshFromPerspectiveToOrtho(gameObject);
             }
-            ScaleFromView(gameObject);
         }
     }
-
-    public void SaveMesh()
-    {
-        ObjectsToObj(toGameObjects, "C:\\Users\\happy\\Downloads", fileName);
-    }
     
-    
-    private void ScaleFromView(GameObject gameObject)
-    {
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-        Vector3[] vertices = mesh.vertices;
 
-        Ray[] rays = new Ray[vertices.Length];
-        float[] vertexDistance = new float[vertices.Length];
-
-        for (int i = 0; i < mesh.vertices.Length; i++)
-        {
-            // Initialization 
-
-            // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
-            // Distance from fromPosition to the vertex
-            vertexDistance[i] = Vector3.Distance(fromPosition.position, VertFromLocalToWorldSpace(gameObject, vertices[i]));
-
-            // Edit
-            vertices[i] = VertFromWorldToLocalSpace(gameObject, rays[i].direction * vertexDistance[i] * scale + fromPosition.position);
-
-            // Rays to the unmodified objects vertices 
-            //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
-        }
-
-        // Update the object's vertices to the modified ones
-        mesh.vertices = vertices;
-    }
     
 
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
@@ -177,22 +150,17 @@ public class MoveVertex : MonoBehaviour
 
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(MoveVertex))]
+[CustomEditor(typeof(ToOrtho))]
 class EditorMoveVertex : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        MoveVertex mv = target as MoveVertex;
+        ToOrtho to = target as ToOrtho;
 
         if (GUILayout.Button("Update Mesh"))
         {
-            mv.UpdateOrthographic();
-        }
-
-        if (GUILayout.Button("Save Mesh"))
-        {
-            mv.SaveMesh();
+            to.UpdateOrthographic();
         }
     }
 }
