@@ -45,6 +45,10 @@ public class ToOrtho : MonoBehaviour
 
     public void UpdateOrthographic()
     {
+        if (!isOrthographic)
+            return;
+
+        Debug.Log("hi");
         for (int i = 0; i < toGameObjects.Length; i++)
         {
             toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);
@@ -52,16 +56,10 @@ public class ToOrtho : MonoBehaviour
 
         foreach (GameObject gameObject in toGameObjects)
         {
-            if (isOrthographic)
-            {
-                MeshFromPerspectiveToOrtho(gameObject);
-            }
+            MeshFromPerspectiveToOrtho(gameObject);
         }
     }
     
-
-    
-
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);

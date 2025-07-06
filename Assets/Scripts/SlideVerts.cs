@@ -2,13 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class SlideVerts : MonoBehaviour
 {
     [SerializeField] Transform fromPosition;
     [SerializeField] float fullObjectScale = 1;
-    [SerializeField] [Range(.3f,3)] float[] uniqueVertMultiplier;
-    
+    [SerializeField][Range(.3f, 3)] float[] uniqueVertMultiplier;
+    [SerializeField] bool updateContinuously;
+
     private Vector3[] uniqueVert;
     private Mesh unmodifiedMesh;
 
@@ -32,8 +39,17 @@ public class SlideVerts : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+         if (updateContinuously)
+        {
+            UpdateMesh();
+        }
+    }
+
+    public void UpdateMesh()
+    {
         gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
         //ScaleFromView(gameObject);
+
         ScaleFromViewVert(gameObject);
     }
 
@@ -53,7 +69,7 @@ public class SlideVerts : MonoBehaviour
             {
                 if (verts[i] == uniqueVert[j])
                 {
-                    distanceMultiplier = (float) Math.Sqrt(uniqueVertMultiplier[j]);
+                    distanceMultiplier = (float)Math.Sqrt(uniqueVertMultiplier[j]);
                 }
             }
             // Ray from fromPosition to the vertex 
@@ -98,11 +114,11 @@ public class SlideVerts : MonoBehaviour
     private Vector3[] GetNumberUniqueVerts(GameObject gameObject)
     {
         Vector3[] verts = gameObject.GetComponent<MeshFilter>().mesh.vertices;
-        List<Vector3> uniqueVerts = new(); 
-        
+        List<Vector3> uniqueVerts = new();
+
         for (int i = 0; i < verts.Length; ++i)
         {
-            if (!uniqueVerts.Contains(verts[i])) 
+            if (!uniqueVerts.Contains(verts[i]))
             {
                 uniqueVerts.Add(verts[i]);
             }
@@ -110,3 +126,21 @@ public class SlideVerts : MonoBehaviour
         return uniqueVerts.ToArray();
     }
 }
+
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(SlideVerts))]
+class EditorSlideVerts : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        SlideVerts sv = target as SlideVerts;
+
+        if (GUILayout.Button("Update Mesh"))
+        {
+            sv.UpdateMesh();
+        }
+    }
+}
+#endif
