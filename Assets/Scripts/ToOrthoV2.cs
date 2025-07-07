@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
 
 // #if UNITY_EDITOR
 // using UnityEditor;
@@ -9,11 +10,14 @@ using UnityEngine;
 public class ToOrthoV2 : MonoBehaviour
 {
     [SerializeField] Transform fromPosition; 
-    [SerializeField] float scale = 1;
+    [SerializeField] float objScale = 1;
     [SerializeField] float throughPlaneDistance = 10;
     private Mesh unmodifiedMesh;
-    private float lastScale = -1;
+    private float lastObjScale = -1;
     private float lastThroughPlaneDistance = -1;
+    private Vector3 lastPosition;
+    private Quaternion lastRotation;
+    private Vector3 lastScale;
 
     private void Start()
     {
@@ -27,19 +31,22 @@ public class ToOrthoV2 : MonoBehaviour
 
     private void Update() 
     {
-        if (scale != lastScale || throughPlaneDistance != lastThroughPlaneDistance)
+        if (objScale != lastObjScale || throughPlaneDistance != lastThroughPlaneDistance || !SamePositionRotateScale())
         {
             gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
 
-            if (scale != 1)
+            MeshFromPerspectiveToOrtho(gameObject);
+
+            if (objScale != 1)
             {
                 ScaleFromView(gameObject);
             }
 
-            MeshFromPerspectiveToOrtho(gameObject);
-
             lastThroughPlaneDistance = throughPlaneDistance;
-            lastScale = scale;
+            lastObjScale = objScale;
+            lastPosition = transform.position;
+            lastRotation = transform.rotation;
+            lastScale = transform.localScale;
         }
     }
     
@@ -110,12 +117,23 @@ public class ToOrthoV2 : MonoBehaviour
             vertexDistance[i] = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]));
 
             // Edit
-            vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, scale * vertexDistance[i] * rays[i].direction + fromPosition.position);
+            vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, objScale * vertexDistance[i] * rays[i].direction + fromPosition.position);
 
             // Rays to the unmodified objects vertices 
             //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
         }
         mesh.vertices = vertices;
+    }
+
+    private bool SamePositionRotateScale()
+    {
+        if (transform.position != lastPosition)
+            return false;
+        if (transform.rotation != lastRotation)
+            return false;
+        if (transform.localScale != lastScale)
+            return false;
+        return true;
     }
     
     public static Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
