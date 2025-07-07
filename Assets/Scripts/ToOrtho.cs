@@ -48,7 +48,6 @@ public class ToOrtho : MonoBehaviour
         if (!isOrthographic)
             return;
 
-        Debug.Log("hi");
         for (int i = 0; i < toGameObjects.Length; i++)
         {
             toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);

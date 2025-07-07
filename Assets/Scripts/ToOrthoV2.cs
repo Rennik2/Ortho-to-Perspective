@@ -1,62 +1,44 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-using static MeshToObj;
+// #if UNITY_EDITOR
+// using UnityEditor;
+// #endif
 
 public class ToOrthoV2 : MonoBehaviour
 {
-    [SerializeField] GameObject[] toGameObjects;
     [SerializeField] Transform fromPosition; 
     [SerializeField] float scale = 1;
-    [SerializeField] bool isOrthographic = true;
-    [SerializeField] float throughPlaneDistance = 1;
-    [SerializeField] bool updateContinuously = false; 
-    private Mesh[] unmodifiedMeshes;
+    [SerializeField] float throughPlaneDistance = 10;
+    private Mesh unmodifiedMesh;
+    private float lastScale = -1;
+    private float lastThroughPlaneDistance = -1;
 
-    private void Start() 
-   {
-        unmodifiedMeshes = new Mesh[toGameObjects.Length];
-
-        for (int i = 0; i < toGameObjects.Length; i++)
-        {
-            if (toGameObjects[i].GetComponent<MeshFilter>()== null)
-                Debug.LogError($"no mesh filter at {i}");
-
-            unmodifiedMeshes[i] = Instantiate(toGameObjects[i].GetComponent<MeshFilter>().mesh);
-        }
+    private void Start()
+    {
+        unmodifiedMesh = gameObject.GetComponent<MeshFilter>().mesh;
 
         if (fromPosition == null)
         {
             fromPosition = Camera.main.transform;
         }
-   }
+    }
 
     private void Update() 
     {
-        if (updateContinuously)
+        if (scale != lastScale || throughPlaneDistance != lastThroughPlaneDistance)
         {
-            UpdateOrthographic();
-        }
-    }
+            gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
 
-    public void UpdateOrthographic()
-    {
-        if (!isOrthographic)
-            return;
+            if (scale != 1)
+            {
+                ScaleFromView(gameObject);
+                lastScale = scale;
+            }
 
-        Debug.Log("hi");
-        for (int i = 0; i < toGameObjects.Length; i++)
-        {
-            toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);
-        }
-
-        foreach (GameObject gameObject in toGameObjects)
-        {
             MeshFromPerspectiveToOrtho(gameObject);
+            lastThroughPlaneDistance = throughPlaneDistance;
         }
     }
     
@@ -73,16 +55,16 @@ public class ToOrthoV2 : MonoBehaviour
         float[] vertexDistances = new float[vertices.Length];
         Vector3[] planeIntersectionPoint = new Vector3[vertices.Length];
         Ray[] perspectiveRays = new Ray[vertices.Length];
-        
+
 
         for (int i = 0; i < vertices.Length; i++)
         {
             // Initialization 
             Vector3 worldSpaceVert = VertFromLocalToWorldSpace(gameObject, vertices[i]);
-            rays[i] = new Ray(worldSpaceVert, - fromPosition.forward);
+            rays[i] = new Ray(worldSpaceVert, -fromPosition.forward);
 
             planeIntersectionPoint[i] = RayPlaneIntersectionPoint(rays[i], cameraPlane);
-            rays[i] = new Ray(planeIntersectionPoint[i], - rays[i].direction);
+            rays[i] = new Ray(planeIntersectionPoint[i], -rays[i].direction);
             vertexDistances[i] = Vector3.Distance(planeIntersectionPoint[i], worldSpaceVert);
 
             // Editing 
@@ -109,6 +91,30 @@ public class ToOrthoV2 : MonoBehaviour
         Vector3 intersectionPoint = line.GetPoint(distance);
 
         return intersectionPoint;
+    }
+
+    private void ScaleFromView(GameObject gameObject)
+    {
+        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        Ray[] rays = new Ray[vertices.Length];
+        float[] vertexDistance = new float[vertices.Length];
+
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            // Ray from fromPosition to the vertex 
+            rays[i] = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
+            // Distance from fromPosition to the vertex
+            vertexDistance[i] = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]));
+
+            // Edit
+            vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, scale * vertexDistance[i] * rays[i].direction + fromPosition.position);
+
+            // Rays to the unmodified objects vertices 
+            //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
+        }
+        mesh.vertices = vertices;
     }
     
     public static Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
@@ -143,23 +149,3 @@ public class ToOrthoV2 : MonoBehaviour
         return vertices_LS;
     }
 }
-
-
-
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(ToOrthoV2))]
-class EditorToOrthoV2 : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        ToOrthoV2 to = target as ToOrthoV2;
-
-        if (GUILayout.Button("Update Mesh"))
-        {
-            to.UpdateOrthographic();
-        }
-    }
-}
-#endif
