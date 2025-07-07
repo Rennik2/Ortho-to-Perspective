@@ -34,11 +34,12 @@ public class ToOrthoV2 : MonoBehaviour
             if (scale != 1)
             {
                 ScaleFromView(gameObject);
-                lastScale = scale;
             }
 
             MeshFromPerspectiveToOrtho(gameObject);
+
             lastThroughPlaneDistance = throughPlaneDistance;
+            lastScale = scale;
         }
     }
     
