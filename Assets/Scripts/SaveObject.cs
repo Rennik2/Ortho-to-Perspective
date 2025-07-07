@@ -36,7 +36,7 @@ class EditorSaveObject : Editor
         {
             so.SaveObjects();
         }
-        if (GUILayout.Button("Save This Object "))
+        if (GUILayout.Button("Save THIS Object "))
         {
             so.SaveThis();
         }

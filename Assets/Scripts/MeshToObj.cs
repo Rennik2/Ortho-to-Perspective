@@ -19,32 +19,31 @@ public static class MeshToObj
 
         mesh.Optimize();
 
-        using (StreamWriter writer = new StreamWriter($"{path}\\{name}.obj"))
-        {
-            // Write object name
-            writer.WriteLine($"o " + gameObject.name);
+        StreamWriter writer = new StreamWriter(Path.Combine(path, name + ".obj"));
 
-            // Write vertices 
-            foreach (Vector3 vert in mesh.vertices)
-            {
-                Vector3 vertWorldPos = VertFromLocalToWorldSpace(gameObject, vert);
-                writer.WriteLine($"v { - vertWorldPos.x} {vertWorldPos.y} {vertWorldPos.z}");
-            }
-            // Write normals 
-            foreach (Vector3 vertNormal in mesh.normals)
-            {
-                writer.WriteLine($"vn {vertNormal.x} {vertNormal.y} {vertNormal.z}");
-            }
-            // Write uvs
-            foreach (Vector2 uv in mesh.uv)
-            {
-                writer.WriteLine($"vt {uv.x} {uv.y}");
-            }
-            // Write
-            for (int i = 0; i < mesh.triangles.Length; i += 3)
-            {
-                writer.WriteLine($"f {mesh.triangles[i] + 1} {mesh.triangles[i + 1] + 1} {mesh.triangles[i + 2] + 1}");
-            }
+        // Write object name
+        writer.WriteLine($"o " + gameObject.name);
+
+        // Write vertices 
+        foreach (Vector3 vert in mesh.vertices)
+        {
+            Vector3 vertWorldPos = VertFromLocalToWorldSpace(gameObject, vert);
+            writer.WriteLine($"v {-vertWorldPos.x} {vertWorldPos.y} {vertWorldPos.z}");
+        }
+        // Write normals 
+        foreach (Vector3 vertNormal in mesh.normals)
+        {
+            writer.WriteLine($"vn {vertNormal.x} {vertNormal.y} {vertNormal.z}");
+        }
+        // Write uvs
+        foreach (Vector2 uv in mesh.uv)
+        {
+            writer.WriteLine($"vt {uv.x} {uv.y}");
+        }
+        // Write
+        for (int i = 0; i < mesh.triangles.Length; i += 3)
+        {
+            writer.WriteLine($"f {mesh.triangles[i] + 1} {mesh.triangles[i + 1] + 1} {mesh.triangles[i + 2] + 1}");
         }
 
     }

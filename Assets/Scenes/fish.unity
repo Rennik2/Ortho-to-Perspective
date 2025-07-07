@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 748411122}
   - component: {fileID: 748411121}
   - component: {fileID: 748411120}
-  - component: {fileID: 748411119}
   - component: {fileID: 748411123}
   m_Layer: 0
   m_Name: fish (1)
@@ -142,25 +141,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &748411119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748411118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 408a271f5b2b5c745b68524d6c7512e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toGameObjects:
-  - {fileID: 748411118}
-  fromPosition: {fileID: 1458473193}
-  scale: 1
-  isOrthographic: 1
-  throughPlaneDistance: 8
-  updateContinuously: 1
 --- !u!23 &748411120
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -219,8 +199,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748411118}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22765817, y: -0.685379, z: -0.6392747, w: -0.2641122}
-  m_LocalPosition: {x: -3.76, y: -0.81, z: 15}
+  m_LocalRotation: {x: 0.27681586, y: -0.66269624, z: -0.6195752, w: -0.3167544}
+  m_LocalPosition: {x: -6.55, y: -0.81, z: 5.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -235,13 +215,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 748411118}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac9d6beeff7d60448b6b336bd65f0f9e, type: 3}
+  m_Script: {fileID: 11500000, guid: b23169881a8027c4ab7801e8d6559f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   fromPosition: {fileID: 1458473193}
-  fullObjectScale: 1
-  uniqueVertMultiplier: []
-  updateContinuously: 0
+  objScale: 3
+  throughPlaneDistance: 14.5
 --- !u!1 &791984425
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,7 +506,7 @@ GameObject:
   - component: {fileID: 2069665871}
   - component: {fileID: 2069665870}
   - component: {fileID: 2069665869}
-  - component: {fileID: 2069665868}
+  - component: {fileID: 2069665872}
   m_Layer: 0
   m_Name: fish (2)
   m_TagString: Untagged
@@ -535,25 +514,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2069665868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2069665867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 408a271f5b2b5c745b68524d6c7512e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toGameObjects:
-  - {fileID: 2069665867}
-  fromPosition: {fileID: 1458473193}
-  scale: 1
-  isOrthographic: 1
-  throughPlaneDistance: 4.2
-  updateContinuously: 1
 --- !u!23 &2069665869
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -612,13 +572,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2069665867}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0647379, y: -0.72911465, z: -0.6755065, w: -0.08883628}
-  m_LocalPosition: {x: -0.29, y: -0.81, z: 18.97}
-  m_LocalScale: {x: 0.3135258, y: 0.3135258, z: 0.3135258}
+  m_LocalRotation: {x: 0.03252907, y: -0.73251593, z: -0.6778206, w: -0.05405117}
+  m_LocalPosition: {x: -0.38, y: -0.92, z: 14.91}
+  m_LocalScale: {x: 0.44027585, y: 0.44027585, z: 0.44027585}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -85.236, y: -554.857, z: 377.966}
+  m_LocalEulerAnglesHint: {x: -85.236, y: -500, z: 377.966}
+--- !u!114 &2069665872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069665867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23169881a8027c4ab7801e8d6559f30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fromPosition: {fileID: 0}
+  objScale: 1
+  throughPlaneDistance: 4.5
 --- !u!1 &2118206639
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,7 +605,7 @@ GameObject:
   - component: {fileID: 2118206643}
   - component: {fileID: 2118206642}
   - component: {fileID: 2118206641}
-  - component: {fileID: 2118206640}
+  - component: {fileID: 2118206644}
   m_Layer: 0
   m_Name: fish
   m_TagString: Untagged
@@ -638,25 +613,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2118206640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118206639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 408a271f5b2b5c745b68524d6c7512e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toGameObjects:
-  - {fileID: 2118206639}
-  fromPosition: {fileID: 1458473193}
-  scale: 1
-  isOrthographic: 1
-  throughPlaneDistance: 17
-  updateContinuously: 1
 --- !u!23 &2118206641
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -715,13 +671,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2118206639}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.32983598, y: -0.6508689, z: -0.59305024, w: 0.340396}
-  m_LocalPosition: {x: 3.97, y: -0.81, z: 24.93}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.20714612, y: -0.70497954, z: -0.6462127, w: 0.20616391}
+  m_LocalPosition: {x: 1.01, y: -0.41, z: 14.27}
+  m_LocalScale: {x: 0.35211116, y: 0.35211116, z: 0.35211116}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -85.236, y: -501.333, z: 377.966}
+--- !u!114 &2118206644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118206639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23169881a8027c4ab7801e8d6559f30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fromPosition: {fileID: 0}
+  objScale: 1.5
+  throughPlaneDistance: 3.4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
