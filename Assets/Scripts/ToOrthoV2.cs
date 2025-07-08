@@ -37,7 +37,7 @@ public class ToOrthoV2 : MonoBehaviour
 
             MeshFromPerspectiveToOrtho(gameObject);
 
-            if (objScale != 1)
+            if (objScale != 1 && !gameObject.GetComponent<SlideVerts>())
             {
                 ScaleFromView(gameObject);
             }

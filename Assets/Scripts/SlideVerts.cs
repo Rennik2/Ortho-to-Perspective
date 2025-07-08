@@ -47,7 +47,11 @@ public class SlideVerts : MonoBehaviour
 
     public void UpdateMesh()
     {
-        gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
+        if (!gameObject.GetComponent<ToOrthoV2>())
+        {
+            gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
+        }
+        
         //ScaleFromView(gameObject);
 
         ScaleFromViewVert(gameObject);
