@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 #if UNITY_EDITOR
@@ -52,8 +50,6 @@ public class SlideVerts : MonoBehaviour
             gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
         }
         
-        //ScaleFromView(gameObject);
-
         ScaleFromViewVert(gameObject);
     }
 
@@ -73,7 +69,7 @@ public class SlideVerts : MonoBehaviour
             {
                 if (verts[i] == uniqueVert[j])
                 {
-                    distanceMultiplier = (float)Math.Sqrt(uniqueVertMultiplier[j]);
+                    distanceMultiplier = Mathf.Sqrt(uniqueVertMultiplier[j]);
                 }
             }
             // Ray from fromPosition to the vertex 
