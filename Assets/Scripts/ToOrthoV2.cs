@@ -54,38 +54,29 @@ public class ToOrthoV2 : MonoBehaviour
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
 
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-
-        Vector3[] vertices = mesh.vertices;
-        Ray[] rays = new Ray[vertices.Length];
-
-        Vector3[] throughViewPoints = new Vector3[vertices.Length];
-        float[] vertexDistances = new float[vertices.Length];
-        Vector3[] planeIntersectionPoint = new Vector3[vertices.Length];
-        Ray[] perspectiveRays = new Ray[vertices.Length];
-
+        Vector3[] vertices = gameObject.GetComponent<MeshFilter>().mesh.vertices;
 
         for (int i = 0; i < vertices.Length; i++)
         {
             // Initialization 
             Vector3 worldSpaceVert = VertFromLocalToWorldSpace(gameObject, vertices[i]);
-            rays[i] = new Ray(worldSpaceVert, -fromPosition.forward);
+            Ray ray = new Ray(worldSpaceVert, -fromPosition.forward);
 
-            planeIntersectionPoint[i] = RayPlaneIntersectionPoint(rays[i], cameraPlane);
-            rays[i] = new Ray(planeIntersectionPoint[i], -rays[i].direction);
-            vertexDistances[i] = Vector3.Distance(planeIntersectionPoint[i], worldSpaceVert);
+            Vector3 planeIntersectionPoint = RayPlaneIntersectionPoint(ray, cameraPlane);
+            ray = new Ray(planeIntersectionPoint, -ray.direction);
+            float vertexDistances = Vector3.Distance(planeIntersectionPoint, worldSpaceVert);
 
             // Editing 
-            throughViewPoints[i] = rays[i].GetPoint(throughPlaneDistance);
-            perspectiveRays[i] = new Ray(fromPosition.position, throughViewPoints[i]);
+            Vector3 throughViewPoints = ray.GetPoint(throughPlaneDistance);
+            Ray perspectiveRay = new Ray(fromPosition.position, throughViewPoints);
 
-            vertices[i] = VertFromWorldToLocalSpace(gameObject, perspectiveRays[i].GetPoint(vertexDistances[i]));
+            vertices[i] = VertFromWorldToLocalSpace(gameObject, perspectiveRay.GetPoint(vertexDistances));
 
             // Debugging
             //Debug.DrawRay(perspectiveRays[i].origin, perspectiveRays[i].direction * vertexDistances[i], Color.blue);
         }
 
-        mesh.vertices = vertices;
+        gameObject.GetComponent<MeshFilter>().mesh.vertices = vertices;
     }
 
     // Return world space point where they intersect 
@@ -106,18 +97,16 @@ public class ToOrthoV2 : MonoBehaviour
         Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
 
-        Ray[] rays = new Ray[vertices.Length];
-        float[] vertexDistance = new float[vertices.Length];
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
             // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
+            Ray ray = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
             // Distance from fromPosition to the vertex
-            vertexDistance[i] = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]));
+            float vertexDistance = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]));
 
             // Edit
-            vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, objScale * vertexDistance[i] * rays[i].direction + fromPosition.position);
+            vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, objScale * vertexDistance * ray.direction + fromPosition.position);
 
             // Rays to the unmodified objects vertices 
             //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);

@@ -58,9 +58,6 @@ public class SlideVerts : MonoBehaviour
         Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
         Vector3[] verts = mesh.vertices;
 
-        Ray[] rays = new Ray[verts.Length];
-        float[] vertexDistance = new float[verts.Length];
-
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
             float distanceMultiplier = 1;
@@ -73,43 +70,15 @@ public class SlideVerts : MonoBehaviour
                 }
             }
             // Ray from fromPosition to the vertex 
-            rays[i] = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, verts[i]) - fromPosition.position);
+            Ray ray = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, verts[i]) - fromPosition.position);
             // Distance from fromPosition to the vertex
-            vertexDistance[i] = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, verts[i]));
+            float vertexDistance = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, verts[i]));
 
-            verts[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, fullObjectScale * distanceMultiplier * vertexDistance[i] * rays[i].direction + fromPosition.position);
+            verts[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, fullObjectScale * distanceMultiplier * vertexDistance * ray.direction + fromPosition.position);
 
         }
         mesh.vertices = verts;
     }
-
-    // private void ScaleFromView(GameObject gameObject)
-    // {
-    //     Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-    //     Vector3[] vertices = mesh.vertices;
-
-    //     Ray[] rays = new Ray[vertices.Length];
-    //     float[] vertexDistance = new float[vertices.Length];
-
-    //     for (int i = 0; i < mesh.vertices.Length; i++)
-    //     {
-    //         // Initialization 
-
-    //         // Ray from fromPosition to the vertex 
-    //         rays[i] = new Ray(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]) - fromPosition.position);
-    //         // Distance from fromPosition to the vertex
-    //         vertexDistance[i] = Vector3.Distance(fromPosition.position, ToOrtho.VertFromLocalToWorldSpace(gameObject, vertices[i]));
-
-    //         // Edit
-    //         vertices[i] = ToOrtho.VertFromWorldToLocalSpace(gameObject, fullObjectScale * vertexDistance[i] * rays[i].direction + fromPosition.position);
-
-    //         // Rays to the unmodified objects vertices 
-    //         //Debug.DrawRay(rays[i].origin, rays[i].direction * vertexDistance[i], Color.red);
-    //     }
-
-    //     // Update the object's vertices to the modified ones
-    //     mesh.vertices = vertices;
-    // }
 
     private Vector3[] GetNumberUniqueVerts(GameObject gameObject)
     {
