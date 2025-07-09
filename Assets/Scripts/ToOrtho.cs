@@ -1,17 +1,13 @@
-using System;
 using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-using static MeshToObj;
-
 public class ToOrtho : MonoBehaviour
 {
     [SerializeField] GameObject[] toGameObjects;
     [SerializeField] Transform fromPosition; 
-    [SerializeField] float scale = 1;
     [SerializeField] bool isOrthographic = true;
     [SerializeField] float throughPlaneDistance = 1;
     [SerializeField] bool updateContinuously = false; 

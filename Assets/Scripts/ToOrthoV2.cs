@@ -1,11 +1,4 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal.Internal;
-
-// #if UNITY_EDITOR
-// using UnityEditor;
-// #endif
 
 public class ToOrthoV2 : MonoBehaviour
 {
