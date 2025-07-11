@@ -495,7 +495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fromPosition: {fileID: 0}
-  objScale: 1.017
+  objScale: 1.015
   throughPlaneDistance: 0.95
 --- !u!23 &1209746650
 MeshRenderer:
