@@ -29,6 +29,8 @@ public class ToOrtho : MonoBehaviour
         {
             fromPosition = Camera.main.transform;
         }
+
+        UpdateOrthographic();
    }
 
     private void Update() 
@@ -41,13 +43,13 @@ public class ToOrtho : MonoBehaviour
 
     public void UpdateOrthographic()
     {
-        if (!isOrthographic)
-            return;
-
         for (int i = 0; i < toGameObjects.Length; i++)
         {
             toGameObjects[i].GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMeshes[i]);
         }
+
+        if (!isOrthographic)
+            return;
 
         foreach (GameObject gameObject in toGameObjects)
         {
