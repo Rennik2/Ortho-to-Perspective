@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Unity-Ortho_to_Perspective.sln"
+    "dotnet.defaultSolution": "Unity-Ortho_to_Perspective.slnx"
 }
