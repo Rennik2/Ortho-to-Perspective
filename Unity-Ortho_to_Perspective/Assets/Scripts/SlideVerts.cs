@@ -5,10 +5,30 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
+/**
+* Use to slide individual verts closer or farther from the camera to create illusions / weird shapes.
+* 
+* instructions:
+*
+* - add SlideVert script to game object
+* - set the main camera as the From Position
+* - enter play mode
+* - play with the Unique Vert Multiplier to move the vertices closer or further from the From Position while not the location when viewed from From Position
+* 
+**/
+
 public class SlideVerts : MonoBehaviour
 {
+    // From Position is the point that when viewed from it appears the meshes are 
+    // in orthographic view
     [SerializeField] Transform fromPosition;
+
+    //Full Object Scale controls the scale of the object in the world while maintaining 
+    // how large it appears from the view point.
     [SerializeField] float fullObjectScale = 1;
+
+    //Unique Vert Multiplier controls the distance between the From Position \
+    // while maintaining its location when viewed from the From Position.
     [SerializeField][Range(.3f, 3)] float[] uniqueVertMultiplier;
     [SerializeField] bool updateContinuously;
 
@@ -35,7 +55,7 @@ public class SlideVerts : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         if (updateContinuously)
+        if (updateContinuously)
         {
             UpdateMesh();
         }
@@ -47,10 +67,12 @@ public class SlideVerts : MonoBehaviour
         {
             gameObject.GetComponent<MeshFilter>().mesh = Instantiate(unmodifiedMesh);
         }
-        
+
         ScaleFromViewVert(gameObject);
     }
 
+    // scales objects in space but keeps the size when vied from fromPosition
+    // can "scale" individual vert 
     private void ScaleFromViewVert(GameObject gameObject)
     {
         Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;

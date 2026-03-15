@@ -4,22 +4,43 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+/**
+* Use to easily make a lot of appear in orthographic view
+*
+* instructions: 
+* - place the script ToOrthoV1 on an empty object
+* - add objects to scene (most have a mesh render and mesh filter component and read right set to true in import settings)
+* - add all object that will be turned to orthographic view into toGameObjects array in unity inspector
+* - set the main camera as the From Position
+* - enter play mode. 
+*
+**/
+
 public class ToOrtho : MonoBehaviour
 {
     [SerializeField] GameObject[] toGameObjects;
-    [SerializeField] Transform fromPosition; 
+
+    // From Position is the point that when viewed from it appears the meshes are in orthographic view. 
+    //If this is different than the main camera will look distorted.
+    [SerializeField] Transform fromPosition;
+
+    //When true shows orthographic view, false to see perspective view
     [SerializeField] bool isOrthographic = true;
+
+    //Through Camera Plane controls how big the orthographic camera is. 
+    // Larger values will show more of the scene / make the object appear 
+    // smaller when view from the From Position.
     [SerializeField] float throughPlaneDistance = 1;
-    [SerializeField] bool updateContinuously = false; 
+    [SerializeField] bool updateContinuously = false;
     private Mesh[] unmodifiedMeshes;
 
-    private void Start() 
-   {
+    private void Start()
+    {
         unmodifiedMeshes = new Mesh[toGameObjects.Length];
 
         for (int i = 0; i < toGameObjects.Length; i++)
         {
-            if (toGameObjects[i].GetComponent<MeshFilter>()== null)
+            if (toGameObjects[i].GetComponent<MeshFilter>() == null)
                 Debug.LogError($"no mesh filter at {i}");
 
             unmodifiedMeshes[i] = Instantiate(toGameObjects[i].GetComponent<MeshFilter>().mesh);
@@ -31,9 +52,9 @@ public class ToOrtho : MonoBehaviour
         }
 
         UpdateOrthographic();
-   }
+    }
 
-    private void Update() 
+    private void Update()
     {
         if (updateContinuously)
         {
@@ -41,6 +62,7 @@ public class ToOrtho : MonoBehaviour
         }
     }
 
+    // resets the mesh and update the orthographic projection for each object 
     public void UpdateOrthographic()
     {
         for (int i = 0; i < toGameObjects.Length; i++)
@@ -56,7 +78,8 @@ public class ToOrtho : MonoBehaviour
             MeshFromPerspectiveToOrtho(gameObject);
         }
     }
-    
+
+    // makes a mesh look like its in orthographic view from the fromPosition
     private void MeshFromPerspectiveToOrtho(GameObject gameObject)
     {
         Plane cameraPlane = new Plane(fromPosition.forward, fromPosition.position);
@@ -70,16 +93,16 @@ public class ToOrtho : MonoBehaviour
         float[] vertexDistances = new float[vertices.Length];
         Vector3[] planeIntersectionPoint = new Vector3[vertices.Length];
         Ray[] perspectiveRays = new Ray[vertices.Length];
-        
+
 
         for (int i = 0; i < vertices.Length; i++)
         {
             // Initialization 
             Vector3 worldSpaceVert = VertFromLocalToWorldSpace(gameObject, vertices[i]);
-            rays[i] = new Ray(worldSpaceVert, - fromPosition.forward);
+            rays[i] = new Ray(worldSpaceVert, -fromPosition.forward);
 
             planeIntersectionPoint[i] = RayPlaneIntersectionPoint(rays[i], cameraPlane);
-            rays[i] = new Ray(planeIntersectionPoint[i], - rays[i].direction);
+            rays[i] = new Ray(planeIntersectionPoint[i], -rays[i].direction);
             vertexDistances[i] = Vector3.Distance(planeIntersectionPoint[i], worldSpaceVert);
 
             // Editing 
@@ -95,19 +118,20 @@ public class ToOrtho : MonoBehaviour
         mesh.vertices = vertices;
     }
 
-    // Return world space point where they intersect 
+    // Return world space point where the line and plane intersect 
     public static Vector3 RayPlaneIntersectionPoint(Ray line, Plane plane)
     {
         float distance = 0;
 
         if (!plane.Raycast(line, out distance))
             Debug.LogError("A ray that was supposed to be hitting the camera plane did not some how. You should multiply by -1 some where");
-        
+
         Vector3 intersectionPoint = line.GetPoint(distance);
 
         return intersectionPoint;
     }
-    
+
+    // returns the world space coordinates for a single vert 
     public static Vector3 VertFromLocalToWorldSpace(GameObject gameObject, Vector3 vert)
     {
         Matrix4x4 transformationMatrix = gameObject.transform.localToWorldMatrix;
@@ -115,6 +139,7 @@ public class ToOrtho : MonoBehaviour
         Vector3 vert_WS = transformationMatrix.MultiplyPoint(vert);
         return vert_WS;
     }
+    // returns the world space coordinates for multiple verts
     public static Vector3[] VerticesFromLocalToWorldSpace(GameObject gameObject, Vector3[] vertices)
     {
         Vector3[] vertices_WS = new Vector3[vertices.Length];
@@ -124,12 +149,14 @@ public class ToOrtho : MonoBehaviour
         }
         return vertices_WS;
     }
+    // returns the local space coordinates for a single vert
     public static Vector3 VertFromWorldToLocalSpace(GameObject gameObject, Vector3 vert)
     {
         Matrix4x4 transformationMatrix = gameObject.transform.worldToLocalMatrix;
         Vector3 vert_LS = transformationMatrix.MultiplyPoint(vert);
         return vert_LS;
     }
+    // returns the local space coordinates for multiple verts
     public static Vector3[] VerticesFromWorldToLocalSpace(GameObject gameObject, Vector3[] vertices)
     {
         Vector3[] vertices_LS = new Vector3[vertices.Length];
@@ -143,7 +170,7 @@ public class ToOrtho : MonoBehaviour
 
 
 
-
+// update mesh button in the inspector
 #if UNITY_EDITOR
 [CustomEditor(typeof(ToOrtho))]
 class EditorMoveVertex : Editor

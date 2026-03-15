@@ -3,15 +3,23 @@ using System.IO;
 using System;
 using static ToOrtho;
 
-public static class MeshToObj 
+/**
+* tool for converting Unity meshes to .obj files
+*
+* I know it does weird things with mesh normals on export
+* not sure why 
+**/
+
+public static class MeshToObj
 {
 
+    // converts unity mesh data to obj file and save it to your computer 
     public static void ObjectToObj(GameObject gameObject, string path, string name)
     {
         if (gameObject == null || gameObject.GetComponent<MeshFilter>() == null || gameObject.GetComponent<MeshFilter>().mesh == null)
         {
             Debug.LogError("GameObject is null or doesn't have MeshFilter component or doesn't have a mesh");
-            return; 
+            return;
         }
 
 
@@ -40,14 +48,15 @@ public static class MeshToObj
         {
             writer.WriteLine($"vt {uv.x} {uv.y}");
         }
-        // Write
+        // Write triangles
         for (int i = 0; i < mesh.triangles.Length; i += 3)
         {
             writer.WriteLine($"f {mesh.triangles[i] + 1} {mesh.triangles[i + 1] + 1} {mesh.triangles[i + 2] + 1}");
         }
 
     }
-    
+
+    // this only works on my computer
     public static void ObjectToObj(GameObject gameObject)
     {
         string path = "C:\\Users\\happy\\Downloads";
@@ -62,6 +71,8 @@ public static class MeshToObj
             ObjectToObj(gameObjects[i], path, $"{name}{i}");
         }
     }
+
+    // this only works on my computer
     public static void ObjectsToObj(GameObject[] gameObject)
     {
         string path = "C:\\Users\\happy\\Downloads";
