@@ -10,7 +10,7 @@ Unity version 6000.3.11f1
 # clone the repo
 git clone https://github.com/Rennik2/Ortho-to-Perspective.git
 ```
-Open folder and open Unity-Ortho_to_Perspective in Unity 
+Open Ortho-to-Perspective/Unity-Ortho_to_Perspective in Unity 
 
 # How It Works
 <img width="3300" height="2550" alt="how it works 2" src="https://github.com/user-attachments/assets/07c4fc70-469a-43e8-b502-37b0cb303800" />
