@@ -1,5 +1,4 @@
 # Orthographic to Perspective
-## Description 
 This project allows you transform a 3d model to look like it's in orthographic view from a perspective camera from a single point of view. 
 
 ## Installation 
@@ -11,10 +10,14 @@ Unity version 6000.3.11f1
 # clone the repo
 git clone https://github.com/Rennik2/Ortho-to-Perspective.git
 ```
-Go into the folder cloned and open Unity-Ortho_to_Perspective folder in Unity.
+Open Ortho-to-Perspective/Unity-Ortho_to_Perspective in Unity 
 
-## How To Use
-### ToOrthoV1 script
+# How It Works
+<img width="3300" height="2550" alt="how it works 2" src="https://github.com/user-attachments/assets/07c4fc70-469a-43e8-b502-37b0cb303800" />
+<img width="3300" height="2550" alt="how it works 1" src="https://github.com/user-attachments/assets/b5417821-bc08-4d48-9b3e-57ddd1becb65" />
+
+# How To Use
+## ToOrthoV1 script
 **Use to easily make a lot of appear in orthographic view** 
 
 - place the script ToOrthoV1 on an empty object
@@ -29,7 +32,7 @@ Is Orthographic allows easy switching between seeing the orthographic view or th
 ##### **Through Camera Plane** 
 Through Camera Plane controls how big the orthographic camera is. Larger values will show more of the scene / make the object appear smaller when view from the From Position.  
 
-### ToOrthoV2 script
+## ToOrthoV2 script
 **Use to make objects appear in orthographic view while giving per object control.**
 
 - add objects to scene (most have a mesh render and mesh filter component and read right set to true in import settings)
@@ -43,7 +46,7 @@ Through Camera controls how big the orthographic camera is. Larger values will s
 ##### **Obj Scale** 
 Obj Scale controls the scale of the object in the world while maintaining how large it appears from the view point.
 
-### SlideVert script 
+## SlideVerts script 
 **Use to slide individual verts closer or farther from the camera to create illusions / weird shapes.**
 
 - add SlideVert script to game object 
@@ -60,7 +63,7 @@ Unique Vert Multiplier controls the distance between the From Position while mai
 #### updating
 Use updateContinuously bool set to true to update the mesh as you change settings. On meshes over a few hundred vertices set updateContinuously to false and press Update Mesh to see changes made and not having so much lag.
 
-### SaveObject script
+## SaveObject script
 **Use to save the distorted meshes in play mode to your computer as obj files.** 
 
 - add to the object you wish to save or add all the object you wish to save to the GameObject array
